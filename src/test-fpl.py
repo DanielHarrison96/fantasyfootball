@@ -19,14 +19,28 @@ async def main():
     player_available_info = player.keys()
 
 
-    players = await fpl.get_players(return_json=True)
+    players = await fpl.get_players(return_json=True, include_summary=True)
+
+
 
     players_table = pd.DataFrame.from_dict(players)
+    players_table_history = []
+    for id, name, player in zip(players_table.id, players_table.first_name, players_table.history):
+        print(len(player))
+        for i in range(len(player)):
+            player[i]['id'] = id
+            player[i]['name'] = name
+        players_table_history.extend(player)
+   
+    players_history_df = pd.DataFrame(players_table_history)
+    print(players_history_df.head())
     players_table.sort_values(by='goals_scored', inplace=True)
 
     print(players_table.head())
-    print()
+    #print(players_table.columns)
     print(players_table.describe())
+
+    
 
 
 
